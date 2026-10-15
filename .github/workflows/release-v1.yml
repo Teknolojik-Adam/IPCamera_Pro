@@ -1,0 +1,125 @@
+name: Publish IPCamera Pro V1.0.0
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/release-v1.yml"
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 35
+    steps:
+      - name: Check out V1 sources
+        uses: actions/checkout@v4
+
+      - name: Build Linux executables
+        shell: bash
+        run: |
+          set -euo pipefail
+          cmake -S . -B build -DCMAKE_BUILD_TYPE=Release -DCMAKE_BUILD_RPATH_USE_ORIGIN=ON
+          cmake --build build --parallel 2
+          ./build/ipcam-cli --help >/dev/null
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq patchelf
+          patchelf --set-rpath '\$ORIGIN' build/ipcam-cli
+          ldd build/ipcam-cli
+          test -x build/ipcam-cli
+
+      - name: Package runnable Linux ZIP
+        shell: bash
+        run: |
+          set -euo pipefail
+          DEST="IPCameraPro-Linux-V1.0.0-x86_64"
+          mkdir -p "$DEST/build" "$DEST/scripts"
+          cp -a build/ipcam-cli build/libipcam_linux.so* "$DEST/build/"
+          cp scripts/connect-phone.sh scripts/phone-handoff.py scripts/phone_url.py scripts/phone-preflight.py "$DEST/scripts/"
+          chmod +x "$DEST/build/ipcam-cli" "$DEST/scripts/connect-phone.sh"
+          cat > "$DEST/start.sh" <<'SCRIPT'
+          #!/usr/bin/env bash
+          set -euo pipefail
+          ROOT="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
+          exec "$ROOT/scripts/connect-phone.sh" "$@"
+          SCRIPT
+          chmod +x "$DEST/start.sh"
+          cat > "$DEST/README.txt" <<'NOTES'
+          IPCamera Pro V1.0.0 - Linux x86_64
+          =====================================
+          Tested originally on Fedora with PipeWire and Kamoso.
+          This binary is built on Ubuntu 24.04; other distributions are not guaranteed.
+
+          Requirements:
+          - Linux x86_64 with a compatible glibc and C++ runtime
+          - Python 3, FFmpeg, iproute2, GStreamer, PipeWire, and the GStreamer pipewiresink plugin
+          - Android phone with IPCamera Pro on the same trusted Wi-Fi network
+
+          Fedora example:
+            sudo dnf install ffmpeg python3 iproute gstreamer1 pipewire-gstreamer
+
+          Start:
+            ./start.sh
+
+          For manual phone URL entry:
+            ./start.sh --manual
+
+          Alternatively:
+            ./build/ipcam-cli --help
+
+          IMPORTANT: Camera streams are sent over local HTTP and are not encrypted.
+          Do not share stream URLs or pairing tokens.
+          NOTES
+          zip -q -yr "IPCameraPro-Linux-V1.0.0-x86_64.zip" "$DEST"
+          unzip -l "IPCameraPro-Linux-V1.0.0-x86_64.zip" | tail -6
+
+      - name: Configure Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+
+      - name: Configure Android SDK
+        uses: android-actions/setup-android@v3
+
+      - name: Build Android V1.0.0 APK
+        shell: bash
+        run: |
+          set -euo pipefail
+          yes | sdkmanager --licenses > /dev/null || true
+          sdkmanager "platforms;android-35" "build-tools;36.0.0"
+          sed -i 's/--version-code 5 --version-name 0.3.2/--version-code 100 --version-name 1.0.0/' android/build-apk.sh
+          bash android/build-apk.sh
+          cp android/IPCameraPro-Android.apk IPCameraPro-Android-V1.0.0.apk
+          test -s IPCameraPro-Android-V1.0.0.apk
+
+      - name: Publish GitHub Release with both assets
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          cat > RELEASE_NOTES.md <<'NOTES'
+          ## IPCamera Pro V1.0.0
+
+          Use an Android phone as a wireless webcam for a Linux desktop.
+
+          **Downloads**
+          - **IPCameraPro-Android-V1.0.0.apk** — install on Android.
+          - **IPCameraPro-Linux-V1.0.0-x86_64.zip** — extract on Linux and run `./start.sh`.
+
+          **Compatibility:** Tested on Fedora with PipeWire and Kamoso. The Linux ZIP contains an x86_64 executable built on Ubuntu 24.04 and requires FFmpeg, GStreamer/PipeWire, and Python 3.
+
+          **APK signing:** This APK is debug-signed for testing. Future builds need the same signing key for in-place updates; installing a build signed with a different key may require uninstalling the previous version first.
+
+          **Security:** The camera stream uses token-protected local HTTP, not end-to-end encryption. Use only a trusted Wi-Fi network.
+          NOTES
+          gh release create v1.0.0 \
+            IPCameraPro-Android-V1.0.0.apk \
+            IPCameraPro-Linux-V1.0.0-x86_64.zip \
+            --title "IPCamera Pro V1.0.0" \
+            --notes-file RELEASE_NOTES.md \
+            --target "$GITHUB_SHA" \
+            --verify-tag
