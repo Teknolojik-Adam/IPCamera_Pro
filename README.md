@@ -1,64 +1,66 @@
 # 📱 IPCamera Pro V1.0
 
-## Elinde kamera olmayan bir masaüstü mü var? Sorun değil.
+## Got a desktop PC without a camera? No problem.
 
-Birçok masaüstü bilgisayar (özellikle kasa toplamış olanların bildiği üzere) kamera ile gelmez. Görüntülü görüşmeye mi çıkacaksın, canlı mı yayın yapacaksın? Derhal bir web kamerası almam gerekiyor diye düşünürsün.
+Many desktop computers—especially custom-built PCs—don't come with a webcam. Need to join a video call or start streaming? Your first thought might be, "I guess I need to buy a webcam."
 
-**IPCamera Pro V1.0** tam bu sorun için var: elindeki Android telefonun zaten harika bir kamera. Üstelik kablolu bir bağlantıya, ek donanıma ya da pahalı bir webcama da ihtiyacın yok. Telefonunu kablosuz olarak Linux bilgisayarına bağla, sanal bir kamera olarak kullan.
+**IPCamera Pro V1.0** was built for exactly that situation. Your Android phone already has a great camera, so why buy another one? No USB cable or extra hardware needed. Connect your phone to your Linux PC over Wi-Fi and use it as a virtual camera.
 
-Projeyi kısaca özetlemek gerekirse: **kamerasız kasa PC'lere, telefon üzerinden kamera özelliği kazandırmak.** Harici webcam parası ödemeden, evdeki telefonu gerçek bir kamera kaynağına dönüştürmek.
+In short: **IPCamera Pro brings webcam functionality to desktop PCs that don't have a camera—using the Android phone you already own.**
 
-## 🚀 Neler Yapabilirsin?
+## 🚀 What Can You Do?
 
-- **📷 Ön ve arka kamera:** Hangi kamerayı kullanmak istersen.
-- **🐧 Linux ile uyumlu:** Fedora üzerinde geliştirildi ve test edildi. Diğer PipeWire destekli Linux dağıtımlarında çalışması hedefleniyor.
-- **🔗 Tamamen kablosuz:** Telefon ve bilgisayarın aynı Wi-Fi ağında olması yeterli.
-- **🎥 Akıcı görüntü:** 10 / 15 / 20 FPS seçenekleriyle ağ koşullarına göre ayarla. Gerçek FPS telefon ve bağlantı performansına bağlıdır.
-- **🖥️ PipeWire sanal kamera:** Kamoso'da test edildi. Diğer uyumlu kamera uygulamalarıyla çalışması hedefleniyor.
-- **⚙️ İki çözünürlük:** 640×480 (düşük sistem yükü) ya da 1280×720 (daha net görüntü).
-- **🔐 Bağlantı anahtarı:** Kamera yayınına erişim özel bir bağlantı anahtarıyla korunur. Yerel HTTP yayını uçtan uca şifreli değildir; güvenilir Wi-Fi ağı kullanın.
+- **📷 Front and rear cameras:** Choose the camera you want to use.
+- **🐧 Linux support:** Developed and tested on Fedora. Support for other PipeWire-based Linux distributions is a goal, but hasn't been verified everywhere.
+- **🔗 Wireless connection:** Connect your phone and computer to the same Wi-Fi network.
+- **🎥 Adjustable frame rate:** Choose 10, 15, or 20 FPS. Actual performance depends on your phone and network.
+- **🖥️ PipeWire virtual camera:** Successfully tested with Kamoso. Compatibility with other camera applications may vary.
+- **⚙️ Two resolutions:** 640×480 for lower processing load or 1280×720 for a sharper picture.
+- **🔐 Access token:** The camera stream is protected by a unique connection token. Local HTTP streaming is not end-to-end encrypted, so use a trusted Wi-Fi network.
 
-## 💡 Neden Böyle Bir Proje?
+## 💡 Why Build This?
 
-Linux'ta telefonu webcam yapmak ilk bakışta basit gibi görünür ama iş pratiğe gelince işler karışır: sanal kamera kurulumu, sürücü uyumsuzlukları, kopan bağlantılar, düşen FPS… Bir de üstüne masaüstü bilgisayarların kamerasız gelmesi eklenince, "hemen webcam alayım" demek çoğu zaman gereksiz bir masraf demek.
+Turning a phone into a webcam on Linux sounds simple—until you run into virtual camera setup, driver compatibility issues, dropped connections, or low frame rates.
 
-IPCamera Pro bu ihtiyaca çözüm sunmayı hedefliyor: kasa PC'ye telefon üzerinden kamera yeteneği kazandırıyor.
+And if your desktop PC doesn't have a camera in the first place, buying a separate webcam can feel like an unnecessary expense.
 
-## 📲 Kurulum ve Kullanım
+IPCamera Pro aims to make better use of what you already have: **your phone's camera.**
 
-1. Android telefonuna IPCamera Pro uygulamasını yükle.
-2. Telefonu ve Linux bilgisayarını aynı Wi-Fi ağına bağla.
-3. Uygulamada çözünürlüğü ve FPS'i seç.
-4. Telefonda kamera yayınını başlat.
-5. Bilgisayardaki IPCamera Pro ile bağlan.
-6. Kamoso gibi uyumlu bir kamera uygulamasını aç ve sanal kamerayı seç.
+## 📲 Setup and Usage
 
-## 🛠️ Teknik Özellikler
+1. Install IPCamera Pro on your Android phone.
+2. Connect your phone and Linux PC to the same Wi-Fi network.
+3. Select the resolution and FPS in the Android app.
+4. Start streaming from your phone.
+5. Connect using IPCamera Pro on your Linux PC.
+6. Open a compatible camera app, such as Kamoso, and select the virtual camera.
 
-| Özellik | Detay |
+## 🛠️ Technical Specifications
+
+| Feature | Details |
 | --- | --- |
-| Sürüm | V1.0.0 |
-| Mobil platform | Android |
-| Masaüstü platform | Linux |
-| Kamera altyapısı | Android Camera2 / Camera1 |
-| Görüntü aktarımı | MJPEG / HTTP (yerel ağ) |
-| Sanal kamera | PipeWire |
-| Hedef FPS | 10 / 15 / 20 |
-| Çözünürlük | 640×480 / 1280×720 |
-| Test edilen uygulama | Kamoso |
+| Version | V1.0.0 |
+| Mobile platform | Android |
+| Desktop platform | Linux |
+| Camera API | Android Camera2 / Camera1 |
+| Video transport | MJPEG / HTTP (local network) |
+| Virtual camera | PipeWire |
+| Target frame rates | 10 / 15 / 20 FPS |
+| Resolutions | 640×480 / 1280×720 |
+| Tested application | Kamoso |
 
-## 📌 V1.0 Durumu
+## 📌 V1.0 Status
 
-IPCamera Pro, Fedora Linux üzerinde PipeWire ve Kamoso ile test edilmiştir. Performans telefon donanımına ve Wi-Fi bağlantısına göre değişebilir. Diğer Linux dağıtımları ve kamera uygulamaları için uyumluluk çalışmaları devam etmektedir.
+IPCamera Pro has been tested on Fedora Linux with PipeWire and Kamoso. Performance depends on phone hardware, JPEG encoding, and Wi-Fi conditions. Compatibility with additional Linux distributions and camera applications is still being worked on.
 
 ---
 
-📱 **Telefonun senin kameran.**
+📱 **Your phone is your camera.**
 
-🖥️ **Kasan kamera olmadan da idare etmek zorunda değil.**
+🖥️ **Your desktop doesn't have to stay camera-less.**
 
-🎥 **IPCamera Pro ikisini birleştiriyor.**
+🎥 **IPCamera Pro brings them together.**
 
 **Android + Linux + PipeWire = IPCamera Pro**
 
-*Geliştirici: Teknolojik Adam*
+*Developed by Teknolojik Adam*
