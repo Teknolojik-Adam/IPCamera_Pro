@@ -51,7 +51,7 @@ struct Config {
 
 void usage() {
     std::cout
-        << "IPCamera Pro Linux 0.2 - Virtual webcam for PCs without physical cameras\n\n"
+        << "IPCamera Pro Linux V1.0 - Virtual webcam for PCs without physical cameras\n\n"
         << "Usage:\n"
         << "  ipcam-cli                       Start PipeWire camera with native color bars\n"
         << "  ipcam-cli --input URL_OR_FILE   Send an IP stream, video or picture to camera\n"
