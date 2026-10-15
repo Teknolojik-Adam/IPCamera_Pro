@@ -1,0 +1,17 @@
+build/
+build-*/
+**/build/
+.build/
+.gradle/
+*.apk
+*.aab
+*.idsig
+*.keystore
+*.jks
+*.log
+*.pyc
+__pycache__/
+.env
+.env.*
+*.bak
+*.v4l2-backup-*
