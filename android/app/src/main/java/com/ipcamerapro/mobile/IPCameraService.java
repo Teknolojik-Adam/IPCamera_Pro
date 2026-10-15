@@ -187,7 +187,7 @@ public final class IPCameraService extends Service {
         }
         if (!((desiredWidth == 640 && desiredHeight == 480)
                 || (desiredWidth == 1280 && desiredHeight == 720))
-                || (desiredFps != 10 && desiredFps != 15)) {
+                || (desiredFps != 10 && desiredFps != 15 && desiredFps != 20)) {
             status = "Geçersiz kamera ayarı";
             stopSelf();
             return;
