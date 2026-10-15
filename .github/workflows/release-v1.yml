@@ -97,7 +97,7 @@ jobs:
           cp android/IPCameraPro-Android.apk IPCameraPro-Android-V1.0.0.apk
           test -s IPCameraPro-Android-V1.0.0.apk
 
-      - name: Publish GitHub Release with both assets
+      - name: Publish or update GitHub Release with both assets
         shell: bash
         env:
           GH_TOKEN: ${{ github.token }}
@@ -112,16 +112,24 @@ jobs:
           - **IPCameraPro-Android-V1.0.0.apk** — install on Android.
           - **IPCameraPro-Linux-V1.0.0-x86_64.zip** — extract on Linux and run `./start.sh`.
 
-          **Compatibility:** Tested on Fedora with PipeWire and Kamoso. The Linux ZIP contains an x86_64 executable built on Ubuntu 24.04 and requires FFmpeg, GStreamer/PipeWire, and Python 3.
+          **Android camera modes:** 10, 15, and 20 FPS target presets (actual FPS depends on hardware and Wi-Fi).\n\n          **Compatibility:** Tested on Fedora with PipeWire and Kamoso. The Linux ZIP contains an x86_64 executable built on Ubuntu 24.04 and requires FFmpeg, GStreamer/PipeWire, and Python 3.
 
           **APK signing:** This APK is debug-signed for testing. Future builds need the same signing key for in-place updates; installing a build signed with a different key may require uninstalling the previous version first.
 
           **Security:** The camera stream uses token-protected local HTTP, not end-to-end encryption. Use only a trusted Wi-Fi network.
           NOTES
-          gh release create v1.0.0 \
-            IPCameraPro-Android-V1.0.0.apk \
-            IPCameraPro-Linux-V1.0.0-x86_64.zip \
-            --title "IPCamera Pro V1.0.0" \
-            --notes-file RELEASE_NOTES.md \
-            --target "$GITHUB_SHA" \
-            --latest
+          if gh release view v1.0.0 >/dev/null 2>&1; then
+            gh release upload v1.0.0 \
+              IPCameraPro-Android-V1.0.0.apk \
+              IPCameraPro-Linux-V1.0.0-x86_64.zip \
+              --clobber
+            gh release edit v1.0.0 --notes-file RELEASE_NOTES.md
+          else
+            gh release create v1.0.0 \
+              IPCameraPro-Android-V1.0.0.apk \
+              IPCameraPro-Linux-V1.0.0-x86_64.zip \
+              --title "IPCamera Pro V1.0.0" \
+              --notes-file RELEASE_NOTES.md \
+              --target "$GITHUB_SHA" \
+              --latest
+          fi
