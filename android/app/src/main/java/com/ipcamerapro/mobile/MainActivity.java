@@ -208,12 +208,14 @@ public final class MainActivity extends Activity {
         quality = new Spinner(this);
         String[] presets = {
                 "640 × 480 · 10 FPS (az veri)",
+                "640 × 480 · 20 FPS (yüksek akıcılık)",
                 "1280 × 720 · 10 FPS",
-                "1280 × 720 · 15 FPS"
+                "1280 × 720 · 15 FPS",
+                "1280 × 720 · 20 FPS (akıcı)"
         };
         quality.setAdapter(new ArrayAdapter<>(this,
                 android.R.layout.simple_spinner_dropdown_item, presets));
-        quality.setSelection(1);
+        quality.setSelection(2);
         options.addView(quality, lineParams(7));
 
         LinearLayout share = vertical();
@@ -293,9 +295,9 @@ public final class MainActivity extends Activity {
         Intent startIntent = new Intent(this, IPCameraService.class);
         startIntent.setAction(IPCameraService.ACTION_START);
         startIntent.putExtra(IPCameraService.EXTRA_FRONT, front);
-        startIntent.putExtra(IPCameraService.EXTRA_WIDTH, preset == 0 ? 640 : 1280);
-        startIntent.putExtra(IPCameraService.EXTRA_HEIGHT, preset == 0 ? 480 : 720);
-        startIntent.putExtra(IPCameraService.EXTRA_FPS, preset == 2 ? 15 : 10);
+        startIntent.putExtra(IPCameraService.EXTRA_WIDTH, preset <= 1 ? 640 : 1280);
+        startIntent.putExtra(IPCameraService.EXTRA_HEIGHT, preset <= 1 ? 480 : 720);
+        startIntent.putExtra(IPCameraService.EXTRA_FPS, preset == 1 || preset == 4 ? 20 : (preset == 3 ? 15 : 10));
         try {
             startForegroundService(startIntent);
             setStatus("Kamera yayın servisi başlatılıyor…", GREEN);
